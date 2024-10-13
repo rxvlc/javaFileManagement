@@ -113,8 +113,8 @@ public class Model {
 			for (File file : archius) {
 				if (file.isDirectory()) {
 					resultat += indent + "|-- \\" + file.getName() + "\n";
-					resultat += buscaCoincidenciesILlistaDirectori(file, indent + "|   ", paraula, respectaMajuscules,
-							respectaAccents);
+					resultat += buscaCoincidenciesILlistaDirectori(file, indent + "|         ", paraula,
+							respectaMajuscules, respectaAccents);
 
 				} else {
 					String tamaño = String.format("%.1f KB", file.length() / 1024.0);
@@ -159,8 +159,8 @@ public class Model {
 			for (File file : archius) {
 				if (file.isDirectory()) {
 					// Si és un directori
-					res += indent + "|-- " + file.getName() + "\n";
-					res += recorreDirectoriIReemplacaParaula(file, indent + "|   ", paraulaVella, paraulaNova,
+					res += indent + "|-- \\" + file.getName() + "\n";
+					res += recorreDirectoriIReemplacaParaula(file, indent + "|         ", paraulaVella, paraulaNova,
 							respectaMajuscules, respectaAccents);
 				} else {
 					// Si és un arxiu de text
@@ -168,6 +168,8 @@ public class Model {
 						if (bA.CoincidenciesArxiu(file, paraulaVella, respectaMajuscules, respectaAccents) > 0) {
 							res += indent + "|-- " + file.getName() + " (" + recorreArxiuIRemplaca(file, paraulaVella,
 									paraulaNova, respectaMajuscules, respectaAccents) + " reemplaços) \n";
+						} else {
+							res += indent + "|-- " + file.getName() + " (0 reemplaços) \n";
 						}
 					} else {
 						res += indent + "|-- " + file.getName() + " (Arxiu no accesible) \n";

@@ -1,7 +1,6 @@
 package aev1;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +11,12 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JCheckBox;
 
+/**
+ * La classe View representa la interfície gràfica d'usuari (GUI) de l'aplicació
+ * de cerca i substitució de paraules en arxius dins d'un directori. Aquesta
+ * classe permet seleccionar un directori, cercar coincidències i reemplaçar
+ * continguts dins dels arxius.
+ */
 public class View extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -29,7 +34,9 @@ public class View extends JFrame {
 	private JScrollPane scrollPane;
 
 	/**
-	 * Constructor de vista
+	 * Constructor de la classe View. Configura la finestra principal de la
+	 * interfície gràfica i inicialitza tots els components que seran utilitzats
+	 * durant l'execució de l'aplicació.
 	 */
 	public View() {
 		setResizable(false);
@@ -95,38 +102,67 @@ public class View extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * @return JButton per seleccionar un directori.
+	 */
 	public JButton getBtnSeleccionaArxiu() {
 		return this.btnSeleccionaDirectori;
 	}
 
+	/**
+	 * @return JTextField que mostra la ruta del directori actual seleccionat.
+	 */
 	public JTextField getTxtRutaActual() {
 		return this.txtRutaActual;
 	}
 
+	/**
+	 * @return JTextArea que mostra l'estructura del directori seleccionat.
+	 */
 	public JTextArea getTxtEstructuraDirectori() {
 		return this.txtEstructuraDirectori;
 	}
 
+	/**
+	 * @return JButton per realitzar la cerca de coincidències.
+	 */
 	public JButton getBtnBuscarCoincidencia() {
 		return this.btnBuscarCoincidencia;
 	}
 
+	/**
+	 * @return JTextField on s'introdueix la paraula a buscar per a la coincidència.
+	 */
 	public JTextField getTxtBuscarCoincidencia() {
 		return this.txtBuscarCoincidencia;
 	}
 
+	/**
+	 * @return JCheckBox per indicar si es vol respectar majúscules en la cerca.
+	 */
 	public JCheckBox getChkRespectarMajuscules() {
 		return this.chkRespectarMajuscules;
 	}
 
+	/**
+	 * @return JCheckBox per indicar si es vol respectar accents en la cerca.
+	 */
 	public JCheckBox getChkRespectarAccents() {
 		return this.chkRespectarAccents;
 	}
 
+	/**
+	 * @return JTextField on s'introdueix la paraula que substituirà la
+	 *         coincidència.
+	 */
 	public JTextField getTxtReemplacarCoincidencia() {
 		return this.txtReemplacContingut;
 	}
 
+	/**
+	 * @return JButton per realitzar l'acció de reemplaçar contingut en el
+	 *         directori.
+	 */
 	public JButton getBtnReemplacarContingut() {
 		return this.btnReemplacarContingut;
 	}
