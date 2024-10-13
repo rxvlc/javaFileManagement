@@ -19,9 +19,9 @@ public class BusquedaArxiu {
 	 * 
 	 * @param f                  Arxiu donat per a treballar amb ell
 	 * @param paraula            La paraula que volen contar
-	 * @param respectaMajuscules Boolea per a comptar coincidencies amb majuscules
+	 * @param respectaMajuscules Booleà per a comptar coincidencies amb majuscules
 	 *                           corresponens o sense ells
-	 * @param respectaAccents    Boolea per a comptar coincidencies amb accents
+	 * @param respectaAccents    Booleà per a comptar coincidencies amb accents
 	 *                           corresponents o sense ells
 	 * @return Retorna el contador de paraules en el fitxer
 	 */
@@ -30,11 +30,11 @@ public class BusquedaArxiu {
 
 		// Processar fitxers de text (amb qualsevol extensió)
 		if (UtilsArxius.esArxiuDeText(f) && !f.getName().toLowerCase().endsWith(".pdf")) {
-			cont = contarEnTextPla(f, paraula, respectaMajuscules, respectaAccents);
+			cont = ContarEnTextPla(f, paraula, respectaMajuscules, respectaAccents);
 		}
 		// Processar fitxers PDF (.pdf)
 		else if (f.getName().toLowerCase().endsWith(".pdf")) {
-			cont = contarEnPDF(f, paraula, respectaMajuscules, respectaAccents);
+			cont = ContarEnPDF(f, paraula, respectaMajuscules, respectaAccents);
 		}
 		// Si no és text pla ni PDF, assumim 0 coincidències
 		else {
@@ -55,14 +55,14 @@ public class BusquedaArxiu {
 	 *                           els accents o no.
 	 * @return int Torna un numero amb les coincidències
 	 */
-	private int contarEnTextPla(File f, String paraula, boolean respectaMajuscules, boolean respectaAccents) {
+	private int ContarEnTextPla(File f, String paraula, boolean respectaMajuscules, boolean respectaAccents) {
 		int cont = 0;
 		try {
 			FileReader fr = new FileReader(f.getAbsolutePath(), StandardCharsets.UTF_8);
 			BufferedReader br = new BufferedReader(fr);
 			String linea = br.readLine();
 			while (linea != null) {
-				cont += contaCoincidencies(linea, paraula, respectaMajuscules, respectaAccents);
+				cont += ContaCoincidencies(linea, paraula, respectaMajuscules, respectaAccents);
 				linea = br.readLine();
 			}
 			br.close();
@@ -84,7 +84,7 @@ public class BusquedaArxiu {
 	 *                           els accents o no.
 	 * @return int Torna un enter amb les coincidències
 	 */
-	private int contarEnPDF(File f, String paraula, boolean respectaMajuscules, boolean respectaAccents) {
+	private int ContarEnPDF(File f, String paraula, boolean respectaMajuscules, boolean respectaAccents) {
 		int cont = 0;
 
 		// Inicialitzem el document
@@ -101,7 +101,7 @@ public class BusquedaArxiu {
 				String text = pdfStripper.getText(pdDocument);
 
 				// Comptar coincidències en el text extret de la pàgina
-				cont += contaCoincidencies(text, paraula, respectaMajuscules, respectaAccents);
+				cont += ContaCoincidencies(text, paraula, respectaMajuscules, respectaAccents);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -123,12 +123,12 @@ public class BusquedaArxiu {
 	 *                           els accents o no.
 	 * @return int torna el contador de paraules en el text
 	 */
-	private int contaCoincidencies(String linea, String paraula, boolean respectaMajuscules, boolean respectAccents) {
+	private int ContaCoincidencies(String linea, String paraula, boolean respectaMajuscules, boolean respectaAccents) {
 		if (linea == null)
 			return 0;
 		// Si no es respecten els accents els eliminem per a comparar cadenes amb eixe
 		// handicap
-		if (!respectAccents) {
+		if (!respectaAccents) {
 			linea = UtilsArxius.eliminaAccents(linea);
 			paraula = UtilsArxius.eliminaAccents(paraula);
 		}

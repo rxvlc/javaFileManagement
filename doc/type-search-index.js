@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"aev1","l":"Model"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"aev1","l":"BusquedaArxiu"},{"p":"aev1","l":"Controller"},{"p":"aev1","l":"Main"},{"p":"aev1","l":"Model"},{"p":"aev1","l":"UtilsArxius"},{"p":"aev1","l":"View"}];updateSearchResults();

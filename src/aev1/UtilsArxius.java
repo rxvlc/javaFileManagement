@@ -8,10 +8,14 @@ import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.regex.Pattern;
 
+/**
+ * Classe estática amb metodes utils per a la gestió de arxius
+ */
 public class UtilsArxius {
 
 	/**
-	 * Métode per saber si un archiu es pot tractar 
+	 * Métode per saber si un archiu es pot tractar
+	 * 
 	 * @param file Arxiu a comprobar
 	 * @return boolean Retorna un booleà per saber si es pot tractar o no
 	 */
@@ -36,9 +40,10 @@ public class UtilsArxius {
 		return true; // Es text plà
 	}
 
-	// 
+	//
 	/**
 	 * Mètode auxiliar per verificar si un caràcter és imprimible
+	 * 
 	 * @param c Caracter per comprobar
 	 * @return Retorna un boolean dient si es imprimible o no
 	 */
@@ -49,8 +54,14 @@ public class UtilsArxius {
 		return (c >= 32 && c <= 126) || caractersImprimibles.indexOf(c) != -1 || Character.isISOControl(c) == false;
 	}
 
-	public static String eliminaAccents(String texto) {
-		String normalized = Normalizer.normalize(texto, Normalizer.Form.NFD);
+	/**
+	 * Métode per a eliminar els accents de un text
+	 * 
+	 * @param text String amb el text amb accents
+	 * @return retorna el string donat sense accents
+	 */
+	public static String eliminaAccents(String text) {
+		String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 		return pattern.matcher(normalized).replaceAll("");
 	}

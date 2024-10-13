@@ -5,10 +5,19 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Classe model per a generar els datos de l'aplicació
+ */
 public class Model {
 
+	/**
+	 * Atribut directori null fins que es seleccione un directori amb el que operar
+	 */
 	File directori = null;
 
+	/**
+	 * Métode constructor buit
+	 */
 	public Model() {
 
 	}
@@ -21,6 +30,15 @@ public class Model {
 		this.directori = nouDirectori;
 	}
 
+	/**
+	 * Mètode per a llistar els arxius d'un directori i subdirectoris de manera
+	 * recursiva
+	 * 
+	 * @param directori File que conté el directori en qüestió
+	 * @param indent    String amb la indentació actual per fer el mètode dinàmic
+	 *                  amb la recursivitat
+	 * @return String amb el resultat de l'estructura del directori en forma d'arbre
+	 */
 	public String llistarArchiusRecursius(File directori, String indent) {
 		File[] archius = directori.listFiles();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -36,7 +54,7 @@ public class Model {
 			for (File file : archius) {
 				if (file.isDirectory()) {
 					resultat += indent + "|-- \\" + file.getName() + "\n";
-					resultat += llistarArchiusRecursius(file, indent + "|   ");
+					resultat += llistarArchiusRecursius(file, indent + "|         ");
 				} else {
 					// Obtenir la mida en bytes
 					long tamanoEnBytes = file.length();
@@ -65,21 +83,30 @@ public class Model {
 	}
 
 	/**
-	 * Métode per a buscar les coincidències de un terme en tot un directori i
+	 * Métode per a buscar les coincidències d'una paraula en un directori i
 	 * subdirectoris
 	 * 
-	 * @param directori
-	 * @param indent
-	 * @param paraula
-	 * @param respectaMajuscules
-	 * @param respectaAccents
-	 * @return ficar algo
+	 * @param directori          File amb el directori en qüestió
+	 * @param indent             String amb la indentació actual per a fer el mètode
+	 *                           dinàmic amb la recursivitat
+	 * @param paraula            String amb la paraula a buscar
+	 * @param respectaMajuscules Boolean per a comptar coincidències amb majúscules
+	 *                           o sense
+	 * @param respectaAccents    Boolean per a comptar coincidències amb accents o
+	 *                           sense
+	 * @return String amb el resultat de la cerca de coincidències, incloent el nom
+	 *         del fitxer i el nombre de coincidències
 	 */
 	public String buscaCoincidenciesILlistaDirectori(File directori, String indent, String paraula,
 			boolean respectaMajuscules, boolean respectaAccents) {
 		File[] archius = directori.listFiles();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String resultat = "";
+		// Si el directori actual és el mateix que el directori principal, afegim la
+		// seua ruta
+		if (this.directori.getAbsolutePath() == directori.getAbsolutePath()) {
+			resultat += directori.getAbsolutePath() + "\n";
+		}
 
 		if (archius != null) {
 			BusquedaArxiu bA = new BusquedaArxiu();
@@ -102,24 +129,48 @@ public class Model {
 		return resultat;
 	}
 
+	/**
+	 * Mètode per a recórrer un directori i reemplaçar una paraula per una altra en
+	 * tots els fitxers de text
+	 * 
+	 * @param directori          File amb el directori en qüestió
+	 * @param indent             String amb la indentació actual per a fer el mètode
+	 *                           dinàmic amb la recursivitat
+	 * @param paraulaVella       String amb la paraula a substituir
+	 * @param paraulaNova        String amb la paraula nova que substituirà a la
+	 *                           vella
+	 * @param respectaMajuscules Boolean per a respectar majúscules durant la
+	 *                           substitució
+	 * @param respectaAccents    Boolean per a respectar accents durant la
+	 *                           substitució
+	 * @return String amb el resultat de la substitució i l'estructura del directori
+	 */
 	public String recorreDirectoriIReemplacaParaula(File directori, String indent, String paraulaVella,
 			String paraulaNova, boolean respectaMajuscules, boolean respectaAccents) {
 		File[] archius = directori.listFiles();
+		BusquedaArxiu bA = new BusquedaArxiu();
 		String res = "";
+		// Si el directori actual és el mateix que el directori principal, afegim la
+		// seua ruta
+		if (this.directori.getAbsolutePath() == directori.getAbsolutePath()) {
+			res += directori.getAbsolutePath() + "\n";
+		}
 		if (archius != null) {
 			for (File file : archius) {
 				if (file.isDirectory()) {
-					// Si es directori
+					// Si és un directori
 					res += indent + "|-- " + file.getName() + "\n";
 					res += recorreDirectoriIReemplacaParaula(file, indent + "|   ", paraulaVella, paraulaNova,
 							respectaMajuscules, respectaAccents);
 				} else {
-					// Si es arxiu, i comprova si es de text
+					// Si és un arxiu de text
 					if (UtilsArxius.esArxiuDeText(file)) {
-						res += indent + "|-- " + file.getName() + " (" + recorreArxiuIRemplaca(file, paraulaVella,
-								paraulaNova, respectaMajuscules, respectaAccents) + ") \n";
+						if (bA.CoincidenciesArxiu(file, paraulaVella, respectaMajuscules, respectaAccents) > 0) {
+							res += indent + "|-- " + file.getName() + " (" + recorreArxiuIRemplaca(file, paraulaVella,
+									paraulaNova, respectaMajuscules, respectaAccents) + " reemplaços) \n";
+						}
 					} else {
-						res += indent + "|-- " + file.getName() + " (0) \n";
+						res += indent + "|-- " + file.getName() + " (Arxiu no accesible) \n";
 					}
 				}
 			}
@@ -127,6 +178,19 @@ public class Model {
 		return res;
 	}
 
+	/**
+	 * Mètode per a recórrer un arxiu i reemplaçar una paraula per una altra
+	 * 
+	 * @param arxiu              File amb l'arxiu a recórrer
+	 * @param paraulaVella       String amb la paraula a substituir
+	 * @param paraulaNova        String amb la paraula nova que substituirà a la
+	 *                           vella
+	 * @param respectaMajuscules Boolean per a respectar majúscules durant la
+	 *                           substitució
+	 * @param respectaAccents    Boolean per a respectar accents durant la
+	 *                           substitució
+	 * @return int amb el nombre de vegades que s'ha substituït la paraula
+	 */
 	private int recorreArxiuIRemplaca(File arxiu, String paraulaVella, String paraulaNova, boolean respectaMajuscules,
 			boolean respectaAccents) {
 		int cont = 0;
@@ -137,22 +201,28 @@ public class Model {
 			String linea = br.readLine();
 			String novaLinea;
 			File nouArxiu = new File(arxiu.getParent() + "\\MOD_" + arxiu.getName());
+
+			// Si el arxiu existix el eliminem per no tindre varios MOD en uno
+			if (nouArxiu.exists()) {
+				nouArxiu.delete();
+			}
+
 			while (linea != null) {
 				if (!respectaAccents) {
 					linea = UtilsArxius.eliminaAccents(linea);
-					paraulaNova = UtilsArxius.eliminaAccents(paraulaNova);
+					paraulaVella = UtilsArxius.eliminaAccents(paraulaVella);
 				}
 
 				if (!respectaMajuscules) {
 					linea = linea.toLowerCase();
-					paraulaNova = paraulaNova.toLowerCase();
+					paraulaVella = paraulaVella.toLowerCase();
 				}
 
 				novaLinea = linea.replace(paraulaVella, paraulaNova);
 				int index = 0;
 				while ((index = linea.indexOf(paraulaVella, index)) != -1) {
 					reemplacos++;
-					index += paraulaVella.length(); // Meneja el index per seguir buscant
+					index += paraulaVella.length(); // Moure l'índex per seguir buscant
 				}
 
 				linea = br.readLine();
@@ -160,26 +230,26 @@ public class Model {
 			}
 			br.close();
 			fr.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("No s'ha pogut processar l'arxiu " + arxiu.getName());
 		}
-		System.out.println(reemplacos);
 		return reemplacos;
 	}
 
-	private boolean escriuLineaEnArxiu(File arxiu, String text) {
-		try {
-			FileWriter fw = new FileWriter(arxiu, true);
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write(text);
+	/**
+	 * Mètode per a escriure una línia en un fitxer
+	 * 
+	 * @param arxiu File amb l'arxiu en el qual es vol escriure
+	 * @param linea String amb la línia a escriure
+	 */
+	private void escriuLineaEnArxiu(File arxiu, String linea) {
+		try (FileOutputStream fos = new FileOutputStream(arxiu, true);
+				OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+				BufferedWriter bw = new BufferedWriter(osw);) {
+			bw.write(linea);
 			bw.newLine();
-			bw.close();
-			fw.close();
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
+		} catch (IOException e) {
+			System.out.println("Error escrivint la línia: " + e.getMessage());
 		}
 	}
-
 }
